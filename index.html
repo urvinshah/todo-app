@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo App</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #f0f2f5;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 60px 16px;
+      }
+
+      .container {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+        padding: 32px;
+        width: 100%;
+        max-width: 480px;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+        color: #1a1a2e;
+        margin-bottom: 24px;
+        text-align: center;
+      }
+
+      .input-row {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 24px;
+      }
+
+      #todo-input {
+        flex: 1;
+        padding: 10px 14px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+
+      #todo-input:focus {
+        border-color: #4f46e5;
+      }
+
+      #add-btn {
+        padding: 10px 18px;
+        background: #4f46e5;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background 0.2s;
+        white-space: nowrap;
+      }
+
+      #add-btn:hover {
+        background: #4338ca;
+      }
+
+      #todo-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .todo-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #f8f9ff;
+        border: 1px solid #e5e7f0;
+        border-radius: 8px;
+        padding: 12px 14px;
+        animation: slide-in 0.2s ease;
+      }
+
+      @keyframes slide-in {
+        from {
+          opacity: 0;
+          transform: translateY(-6px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .todo-text {
+        font-size: 1rem;
+        color: #333;
+        word-break: break-word;
+        flex: 1;
+      }
+
+      .delete-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #999;
+        font-size: 1.1rem;
+        padding: 4px 8px;
+        border-radius: 6px;
+        transition:
+          color 0.2s,
+          background 0.2s;
+        margin-left: 12px;
+        flex-shrink: 0;
+      }
+
+      .delete-btn:hover {
+        color: #e53e3e;
+        background: #fff0f0;
+      }
+
+      .empty-msg {
+        text-align: center;
+        color: #aaa;
+        font-size: 0.95rem;
+        padding: 16px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Todo List</h1>
+      <div class="input-row">
+        <input
+          type="text"
+          id="todo-input"
+          placeholder="Add a new todo..."
+          maxlength="200"
+          aria-label="New todo"
+        />
+        <button id="add-btn" aria-label="Add todo">Add</button>
+      </div>
+      <ul id="todo-list" aria-label="Todo list"></ul>
+    </div>
+
+    <script>
+      const input = document.getElementById("todo-input");
+      const addBtn = document.getElementById("add-btn");
+      const list = document.getElementById("todo-list");
+
+      function renderEmpty() {
+        const existing = list.querySelector(".empty-msg");
+        if (list.children.length === 0 && !existing) {
+          const msg = document.createElement("li");
+          msg.className = "empty-msg";
+          msg.textContent = "No todos yet. Add one above!";
+          list.appendChild(msg);
+        } else if (list.children.length > 1 && existing) {
+          existing.remove();
+        }
+      }
+
+      function addTodo() {
+        const text = input.value.trim();
+        if (!text) return;
+
+        // Remove empty message if present
+        const emptyMsg = list.querySelector(".empty-msg");
+        if (emptyMsg) emptyMsg.remove();
+
+        const li = document.createElement("li");
+        li.className = "todo-item";
+
+        const span = document.createElement("span");
+        span.className = "todo-text";
+        span.textContent = text;
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.className = "delete-btn";
+        deleteBtn.textContent = "✕";
+        deleteBtn.setAttribute("aria-label", "Delete todo");
+        deleteBtn.addEventListener("click", () => {
+          li.remove();
+          renderEmpty();
+        });
+
+        li.appendChild(span);
+        li.appendChild(deleteBtn);
+        list.appendChild(li);
+
+        input.value = "";
+        input.focus();
+      }
+
+      addBtn.addEventListener("click", addTodo);
+
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") addTodo();
+      });
+
+      renderEmpty();
+    </script>
+  </body>
+</html>
