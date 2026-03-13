@@ -5,6 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Todo App</title>
     <style>
+      :root {
+        --bg: #f0f2f5;
+        --container-bg: #fff;
+        --shadow: rgba(0, 0, 0, 0.1);
+        --heading: #1a1a2e;
+        --input-border: #ddd;
+        --item-bg: #f8f9ff;
+        --item-border: #e5e7f0;
+        --text: #333;
+        --empty: #aaa;
+        --delete-hover-bg: #fff0f0;
+      }
+
+      body.dark {
+        --bg: #0f0f1a;
+        --container-bg: #1e1e2e;
+        --shadow: rgba(0, 0, 0, 0.4);
+        --heading: #e0e0f0;
+        --input-border: #444;
+        --item-bg: #252535;
+        --item-border: #333348;
+        --text: #d0d0e0;
+        --empty: #666;
+        --delete-hover-bg: #3a1a1a;
+      }
+
       *,
       *::before,
       *::after {
@@ -15,28 +41,56 @@
 
       body {
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        background: #f0f2f5;
+        background: var(--bg);
         min-height: 100vh;
         display: flex;
         justify-content: center;
         align-items: flex-start;
         padding: 60px 16px;
+        transition: background 0.3s;
       }
 
       .container {
-        background: #fff;
+        background: var(--container-bg);
         border-radius: 12px;
-        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 24px var(--shadow);
         padding: 32px;
         width: 100%;
         max-width: 480px;
+        transition:
+          background 0.3s,
+          box-shadow 0.3s;
+      }
+
+      .header {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        margin-bottom: 24px;
       }
 
       h1 {
+        grid-column: 2;
         font-size: 1.8rem;
-        color: #1a1a2e;
-        margin-bottom: 24px;
+        color: var(--heading);
         text-align: center;
+      }
+
+      #theme-toggle {
+        grid-column: 3;
+        justify-self: end;
+        background: #4f46e5;
+        border: none;
+        border-radius: 8px;
+        padding: 6px 12px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        line-height: 1;
+        transition: background 0.2s;
+      }
+
+      #theme-toggle:hover {
+        background: #4338ca;
       }
 
       .input-row {
@@ -48,11 +102,13 @@
       #todo-input {
         flex: 1;
         padding: 10px 14px;
-        border: 2px solid #ddd;
+        border: 2px solid var(--input-border);
         border-radius: 8px;
         font-size: 1rem;
         outline: none;
-        transition: border-color 0.2s;
+        background: var(--item-bg);
+        color: var(--text);
+        transition: border-color 0.2s, background 0.3s;
       }
 
       #todo-input:focus {
@@ -86,11 +142,12 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        background: #f8f9ff;
-        border: 1px solid #e5e7f0;
+        background: var(--item-bg);
+        border: 1px solid var(--item-border);
         border-radius: 8px;
         padding: 12px 14px;
         animation: slide-in 0.2s ease;
+        transition: background 0.3s, border-color 0.3s;
       }
 
       @keyframes slide-in {
@@ -106,7 +163,7 @@
 
       .todo-text {
         font-size: 1rem;
-        color: #333;
+        color: var(--text);
         word-break: break-word;
         flex: 1;
       }
@@ -128,12 +185,12 @@
 
       .delete-btn:hover {
         color: #e53e3e;
-        background: #fff0f0;
+        background: var(--delete-hover-bg);
       }
 
       .empty-msg {
         text-align: center;
-        color: #aaa;
+        color: var(--empty);
         font-size: 0.95rem;
         padding: 16px 0;
       }
@@ -141,7 +198,10 @@
   </head>
   <body>
     <div class="container">
-      <h1>Todo List</h1>
+      <div class="header">
+        <h1>Todo List</h1>
+        <button id="theme-toggle" aria-label="Toggle dark/light theme">🌙</button>
+      </div>
       <div class="input-row">
         <input
           type="text"
@@ -159,6 +219,19 @@
       const input = document.getElementById("todo-input");
       const addBtn = document.getElementById("add-btn");
       const list = document.getElementById("todo-list");
+      const themeToggle = document.getElementById("theme-toggle");
+
+      // Restore saved theme preference
+      if (localStorage.getItem("theme") === "dark") {
+        document.body.classList.add("dark");
+        themeToggle.textContent = "☀️";
+      }
+
+      themeToggle.addEventListener("click", () => {
+        const isDark = document.body.classList.toggle("dark");
+        themeToggle.textContent = isDark ? "☀️" : "🌙";
+        localStorage.setItem("theme", isDark ? "dark" : "light");
+      });
 
       function renderEmpty() {
         const existing = list.querySelector(".empty-msg");
