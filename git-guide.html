@@ -1,0 +1,1443 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interactive Git Learning Guide</title>
+    <style>
+      :root {
+        --bg: #f0f2f5;
+        --container-bg: #fff;
+        --shadow: rgba(0, 0, 0, 0.1);
+        --heading: #1a1a2e;
+        --text: #333;
+        --muted: #666;
+        --empty: #aaa;
+        --border: #e5e7f0;
+        --code-bg: #1e1e2e;
+        --code-text: #cdd6f4;
+        --tag-beginner-bg: #e0f2fe;
+        --tag-beginner-text: #0369a1;
+        --tag-advanced-bg: #fef3c7;
+        --tag-advanced-text: #92400e;
+        --tag-pro-bg: #fce7f3;
+        --tag-pro-text: #9d174d;
+        --progress-bg: #e5e7f0;
+        --progress-fill: #4f46e5;
+        --card-bg: #f8f9ff;
+        --accent: #4f46e5;
+        --accent-hover: #4338ca;
+        --done-bg: #f0fdf4;
+        --done-border: #86efac;
+        --copy-bg: #2d2d3e;
+        --copy-hover: #4f46e5;
+      }
+
+      body.dark {
+        --bg: #0f0f1a;
+        --container-bg: #1e1e2e;
+        --shadow: rgba(0, 0, 0, 0.4);
+        --heading: #e0e0f0;
+        --text: #d0d0e0;
+        --muted: #999;
+        --empty: #555;
+        --border: #333348;
+        --code-bg: #11111b;
+        --code-text: #cdd6f4;
+        --tag-beginner-bg: #0c3047;
+        --tag-beginner-text: #7dd3fc;
+        --tag-advanced-bg: #3b2a08;
+        --tag-advanced-text: #fcd34d;
+        --tag-pro-bg: #3b0a26;
+        --tag-pro-text: #f9a8d4;
+        --progress-bg: #333348;
+        --progress-fill: #6366f1;
+        --card-bg: #252535;
+        --accent: #6366f1;
+        --accent-hover: #4f46e5;
+        --done-bg: #052e16;
+        --done-border: #166534;
+        --copy-bg: #11111b;
+        --copy-hover: #4f46e5;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        padding: 40px 16px 80px;
+        transition: background 0.3s, color 0.3s;
+      }
+
+      .page-header {
+        max-width: 860px;
+        margin: 0 auto 32px;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .page-header h1 {
+        font-size: 2rem;
+        color: var(--heading);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .page-header .subtitle {
+        color: var(--muted);
+        font-size: 0.95rem;
+        margin-top: 6px;
+      }
+
+      .header-actions {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .btn {
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 8px 14px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: background 0.2s;
+        white-space: nowrap;
+      }
+
+      .btn:hover {
+        background: var(--accent-hover);
+      }
+
+      .btn-ghost {
+        background: none;
+        border: 2px solid var(--border);
+        color: var(--text);
+      }
+
+      .btn-ghost:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: none;
+      }
+
+      /* Progress bar */
+      .progress-section {
+        max-width: 860px;
+        margin: 0 auto 32px;
+        background: var(--container-bg);
+        border-radius: 12px;
+        box-shadow: 0 2px 12px var(--shadow);
+        padding: 20px 24px;
+        transition: background 0.3s;
+      }
+
+      .progress-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+
+      .progress-label {
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: var(--heading);
+      }
+
+      .progress-count {
+        font-size: 0.85rem;
+        color: var(--muted);
+      }
+
+      .progress-bar {
+        width: 100%;
+        height: 10px;
+        background: var(--progress-bg);
+        border-radius: 99px;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: var(--progress-fill);
+        border-radius: 99px;
+        transition: width 0.4s ease;
+        width: 0%;
+      }
+
+      /* Section */
+      .section {
+        max-width: 860px;
+        margin: 0 auto 40px;
+      }
+
+      .section-title {
+        font-size: 1.35rem;
+        font-weight: 700;
+        color: var(--heading);
+        margin-bottom: 16px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      /* Topic card */
+      .card {
+        background: var(--container-bg);
+        border-radius: 12px;
+        box-shadow: 0 2px 12px var(--shadow);
+        margin-bottom: 16px;
+        overflow: hidden;
+        transition: background 0.3s, box-shadow 0.3s;
+      }
+
+      .card.done {
+        background: var(--done-bg);
+        border: 1px solid var(--done-border);
+        box-shadow: none;
+      }
+
+      .card-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px 20px;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .card-header:hover .card-title {
+        color: var(--accent);
+      }
+
+      .card-icon {
+        font-size: 1.4rem;
+        flex-shrink: 0;
+      }
+
+      .card-title {
+        flex: 1;
+        font-size: 1.05rem;
+        font-weight: 600;
+        color: var(--heading);
+        transition: color 0.2s;
+      }
+
+      .card-tag {
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 3px 8px;
+        border-radius: 99px;
+        flex-shrink: 0;
+      }
+
+      .tag-beginner {
+        background: var(--tag-beginner-bg);
+        color: var(--tag-beginner-text);
+      }
+
+      .tag-advanced {
+        background: var(--tag-advanced-bg);
+        color: var(--tag-advanced-text);
+      }
+
+      .tag-pro {
+        background: var(--tag-pro-bg);
+        color: var(--tag-pro-text);
+      }
+
+      .card-chevron {
+        font-size: 0.8rem;
+        color: var(--muted);
+        transition: transform 0.25s;
+        flex-shrink: 0;
+      }
+
+      .card.open .card-chevron {
+        transform: rotate(180deg);
+      }
+
+      .card-body {
+        display: none;
+        padding: 0 20px 20px;
+        border-top: 1px solid var(--border);
+      }
+
+      .card.open .card-body {
+        display: block;
+      }
+
+      .card-desc {
+        margin: 14px 0 12px;
+        font-size: 0.95rem;
+        line-height: 1.65;
+        color: var(--text);
+      }
+
+      /* Code block */
+      .code-block {
+        position: relative;
+        margin: 12px 0;
+      }
+
+      .code-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--muted);
+        margin-bottom: 4px;
+      }
+
+      pre {
+        background: var(--code-bg);
+        color: var(--code-text);
+        border-radius: 8px;
+        padding: 14px 16px;
+        font-size: 0.88rem;
+        line-height: 1.7;
+        overflow-x: auto;
+        font-family: "Cascadia Code", "Fira Code", "Consolas", "Menlo", monospace;
+        white-space: pre;
+      }
+
+      .copy-btn {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background: var(--copy-bg);
+        color: var(--code-text);
+        border: none;
+        border-radius: 6px;
+        padding: 4px 10px;
+        font-size: 0.75rem;
+        cursor: pointer;
+        transition: background 0.2s;
+        font-family: inherit;
+      }
+
+      .copy-btn:hover {
+        background: var(--copy-hover);
+        color: #fff;
+      }
+
+      /* Tips */
+      .tip {
+        background: var(--card-bg);
+        border-left: 4px solid var(--accent);
+        border-radius: 0 8px 8px 0;
+        padding: 10px 14px;
+        margin: 10px 0;
+        font-size: 0.88rem;
+        line-height: 1.6;
+        color: var(--text);
+      }
+
+      .tip strong {
+        color: var(--accent);
+      }
+
+      /* Done button row */
+      .done-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 16px;
+        padding-top: 14px;
+        border-top: 1px solid var(--border);
+      }
+
+      .done-checkbox {
+        width: 18px;
+        height: 18px;
+        accent-color: var(--accent);
+        cursor: pointer;
+        flex-shrink: 0;
+      }
+
+      .done-label {
+        font-size: 0.9rem;
+        color: var(--muted);
+        cursor: pointer;
+      }
+
+      /* Back link */
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+        color: var(--accent);
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 24px;
+        max-width: 860px;
+        display: block;
+        margin-left: 0;
+        margin-right: auto;
+        width: fit-content;
+      }
+
+      .back-link:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div style="max-width: 860px; margin: 0 auto 4px;">
+      <a href="index.html" class="back-link">&#8592; Back to Todo App</a>
+    </div>
+
+    <div class="page-header">
+      <div>
+        <h1>&#x1F4DA; Interactive Git Learning Guide</h1>
+        <p class="subtitle">
+          Practical Git skills from zero to production-ready — work through each
+          topic and check it off as you go.
+        </p>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-ghost" id="reset-btn" aria-label="Reset progress">Reset</button>
+        <button class="btn" id="theme-toggle" aria-label="Toggle dark/light theme">&#x1F319;</button>
+      </div>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="progress-section">
+      <div class="progress-header">
+        <span class="progress-label">Your Progress</span>
+        <span class="progress-count" id="progress-count">0 / 0 topics completed</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+    </div>
+
+    <!-- ====================================================
+         BEGINNER SECTION
+    ===================================================== -->
+    <div class="section" id="beginner">
+      <h2 class="section-title">&#x1F331; Beginner — Git Fundamentals</h2>
+
+      <!-- 1. Installation & Identity -->
+      <div class="card" id="topic-1">
+        <div class="card-header" role="button" tabindex="0" aria-expanded="false">
+          <span class="card-icon">&#x2699;&#xFE0F;</span>
+          <span class="card-title">1. Installation &amp; Identity Setup</span>
+          <span class="card-tag tag-beginner">Beginner</span>
+          <span class="card-chevron">&#x25BC;</span>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">
+            Before anything else, install Git and tell it who you are. Every
+            commit records your name and email, so this matters for team work
+            and open-source contributions.
+          </p>
+          <div class="code-block">
+            <div class="code-label">Install (Ubuntu / Debian)</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button>sudo apt update &amp;&amp; sudo apt install git -y</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label">Install (macOS via Homebrew)</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button>brew install git</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label">Set your identity (run once globally)</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button>git config --global user.name  "Your Name"
+git config --global user.email "you@example.com"
+git config --global core.editor "code --wait"   # VS Code as default editor
+git config --global init.defaultBranch main      # modern default branch name</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label">Verify</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button>git config --list</pre>
+          </div>
+          <div class="tip">
+            <strong>Production tip:</strong> Use a work email in repos that
+            belong to your employer. You can override the global config
+            per-repo: <code>git config user.email "work@company.com"</code>
+            inside that repo folder.
+          </div>
+          <div class="done-row">
+            <input type="checkbox" class="done-checkbox" id="done-1" aria-label="Mark topic 1 as done" />
+            <label for="done-1" class="done-label">Mark as done</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Init & Clone -->
+      <div class="card" id="topic-2">
+        <div class="card-header" role="button" tabindex="0" aria-expanded="false">
+          <span class="card-icon">&#x1F4C2;</span>
+          <span class="card-title">2. Creating &amp; Cloning Repositories</span>
+          <span class="card-tag tag-beginner">Beginner</span>
+          <span class="card-chevron">&#x25BC;</span>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">
+            A Git <em>repository</em> is a folder tracked by Git. You either
+            start one from scratch (<code>init</code>) or copy an existing one
+            (<code>clone</code>).
+          </p>
+          <div class="code-block">
+            <div class="code-label">Start a new repo</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button>mkdir my-project &amp;&amp; cd my-project
+git init</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label">Clone a remote repo</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button>git clone https://github.com/owner/repo.git
+git clone https://github.com/owner/repo.git my-folder   # custom folder name</pre>
+          </div>
+          <div class="tip">
+            <strong>Production tip:</strong> Prefer SSH cloning in CI/CD
+            pipelines:
+            <code>git clone git@github.com:owner/repo.git</code>
+          </div>
+          <div class="done-row">
+            <input type="checkbox" class="done-checkbox" id="done-2" aria-label="Mark topic 2 as done" />
+            <label for="done-2" class="done-label">Mark as done</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Staging & Committing -->
+      <div class="card" id="topic-3">
+        <div class="card-header" role="button" tabindex="0" aria-expanded="false">
+          <span class="card-icon">&#x1F4DD;</span>
+          <span class="card-title">3. Staging &amp; Committing Changes</span>
+          <span class="card-tag tag-beginner">Beginner</span>
+          <span class="card-chevron">&#x25BC;</span>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">
+            Git has three areas: <strong>working directory</strong> (your
+            files), <strong>staging area / index</strong> (what will go into
+            the next commit), and the <strong>commit history</strong>. You
+            selectively stage changes before committing.
+          </p>
+          <div class="code-block">
+            <div class="code-label">Check what changed</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button>git status            # overview
+git diff              # unstaged changes
+git diff --staged     # staged changes (ready to commit)</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label">Stage files</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button>git add file.txt          # stage one file
+git add src/              # stage a directory
+git add .                 # stage everything in the current folder
+git add -p                # interactive: stage specific hunks (powerful!)</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label">Commit</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button>git commit -m "feat: add login form"
+git commit -am "fix: correct typo"   # stage all tracked changes + commit</pre>
+          </div>
+          <div class="tip">
+            <strong>Production tip:</strong> Follow
+            <a href="https://www.conventionalcommits.org" target="_blank" rel="noopener noreferrer">Conventional Commits</a>:
+            <code>type(scope): description</code> — e.g.,
+            <code>feat(auth): add OAuth2 login</code>,
+            <code>fix(api): handle null response</code>. This enables
+            automated changelogs and semantic versioning.
+          </div>
+          <div class="done-row">
+            <input type="checkbox" class="done-checkbox" id="done-3" aria-label="Mark topic 3 as done" />
+            <label for="done-3" class="done-label">Mark as done</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Viewing History -->
+      <div class="card" id="topic-4">
+        <div class="card-header" role="button" tabindex="0" aria-expanded="false">
+          <span class="card-icon">&#x1F4DC;</span>
+          <span class="card-title">4. Viewing Commit History</span>
+          <span class="card-tag tag-beginner">Beginner</span>
+          <span class="card-chevron">&#x25BC;</span>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">
+            <code>git log</code> shows the commit history. Learn its flags —
+            they are invaluable for code reviews and debugging regressions.
+          </p>
+          <div class="code-block">
+            <div class="code-label">Common log commands</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button>git log                             # full history
+git log --oneline                   # compact view
+git log --oneline --graph --all     # visual branch graph
+git log -10                         # last 10 commits
+git log --author="Alice"            # filter by author
+git log --since="2 weeks ago"       # filter by date
+git log --grep="fix"                # filter by commit message
+git log -p file.txt                 # history of changes to a specific file
+git show abc1234                    # show a specific commit</pre>
+          </div>
+          <div class="tip">
+            <strong>Alias tip:</strong> Add this to your
+            <code>~/.gitconfig</code> for a beautiful graph:
+            <code>git config --global alias.lg "log --oneline --graph --all --decorate"</code>
+            Then run <code>git lg</code>.
+          </div>
+          <div class="done-row">
+            <input type="checkbox" class="done-checkbox" id="done-4" aria-label="Mark topic 4 as done" />
+            <label for="done-4" class="done-label">Mark as done</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Remote Repositories -->
+      <div class="card" id="topic-5">
+        <div class="card-header" role="button" tabindex="0" aria-expanded="false">
+          <span class="card-icon">&#x2601;&#xFE0F;</span>
+          <span class="card-title">5. Working with Remotes (push, pull, fetch)</span>
+          <span class="card-tag tag-beginner">Beginner</span>
+          <span class="card-chevron">&#x25BC;</span>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">
+            Remotes are versions of your repo hosted elsewhere (GitHub, GitLab,
+            etc.). <code>push</code> uploads your commits;
+            <code>fetch</code> downloads without merging;
+            <code>pull</code> is fetch + merge.
+          </p>
+          <div class="code-block">
+            <div class="code-label">Remote commands</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button>git remote -v                          # list remotes
+git remote add origin &lt;url&gt;            # add a remote
+git push origin main                   # push branch to remote
+git push -u origin main                # push &amp; set upstream tracking
+git fetch origin                       # download changes (don't merge yet)
+git pull origin main                   # fetch + merge
+git pull --rebase origin main          # fetch + rebase (cleaner history)</pre>
+          </div>
+          <div class="tip">
+            <strong>Production tip:</strong> Prefer
+            <code>git pull --rebase</code> over plain
+            <code>git pull</code> to avoid unnecessary merge commits in shared
+            branches. Set it as the default:
+            <code>git config --global pull.rebase true</code>
+          </div>
+          <div class="done-row">
+            <input type="checkbox" class="done-checkbox" id="done-5" aria-label="Mark topic 5 as done" />
+            <label for="done-5" class="done-label">Mark as done</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. Branching & Merging -->
+      <div class="card" id="topic-6">
+        <div class="card-header" role="button" tabindex="0" aria-expanded="false">
+          <span class="card-icon">&#x1F33F;</span>
+          <span class="card-title">6. Branching &amp; Merging</span>
+          <span class="card-tag tag-beginner">Beginner</span>
+          <span class="card-chevron">&#x25BC;</span>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">
+            Branches let you work on features or bug fixes in isolation without
+            affecting the main codebase. Merging brings those changes back.
+          </p>
+          <div class="code-block">
+            <div class="code-label">Branch operations</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button>git branch                        # list local branches
+git branch -a                     # list all branches (including remote)
+git branch feature/login          # create a branch
+git checkout feature/login        # switch to a branch
+git checkout -b feature/login     # create AND switch (one command)
+git switch -c feature/login       # modern alternative (Git 2.23+)
+git branch -d feature/login       # delete merged branch
+git branch -D feature/login       # force-delete unmerged branch</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label">Merge</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button>git checkout main
+git merge feature/login           # merge feature into main
+git merge --no-ff feature/login   # always create a merge commit (keeps history)</pre>
+          </div>
+          <div class="tip">
+            <strong>Production tip:</strong> Use
+            <strong>short-lived feature branches</strong>. Long-lived branches
+            drift far from main and cause painful merge conflicts. Merge or
+            rebase at least daily.
+          </div>
+          <div class="done-row">
+            <input type="checkbox" class="done-checkbox" id="done-6" aria-label="Mark topic 6 as done" />
+            <label for="done-6" class="done-label">Mark as done</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7. Undoing Changes -->
+      <div class="card" id="topic-7">
+        <div class="card-header" role="button" tabindex="0" aria-expanded="false">
+          <span class="card-icon">&#x21A9;&#xFE0F;</span>
+          <span class="card-title">7. Undoing Changes</span>
+          <span class="card-tag tag-beginner">Beginner</span>
+          <span class="card-chevron">&#x25BC;</span>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">
+            Git gives you multiple ways to undo — the right one depends on how
+            far back you want to go and whether the commits are already pushed.
+          </p>
+          <div class="code-block">
+            <div class="code-label">Discard working-directory changes</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button>git restore file.txt              # discard unstaged changes in a file
+git restore .                     # discard ALL unstaged changes
+git clean -fd                     # remove untracked files &amp; directories</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label">Unstage</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button>git restore --staged file.txt     # unstage a file (keep working-dir change)</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label">Amend the last commit (not yet pushed)</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button>git commit --amend -m "corrected message"  # rewrite last commit message
+git commit --amend --no-edit               # add staged files to last commit</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label">Revert a pushed commit (safe — creates a new commit)</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button>git revert abc1234        # creates a new "undo" commit
+git revert HEAD           # revert the latest commit</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label">Reset (use with caution on shared branches)</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button>git reset --soft HEAD~1   # undo last commit, keep changes staged
+git reset --mixed HEAD~1  # undo last commit, keep changes unstaged (default)
+git reset --hard HEAD~1   # undo last commit AND discard all changes</pre>
+          </div>
+          <div class="tip">
+            <strong>Production rule:</strong> Never use
+            <code>git reset --hard</code> or <code>git push --force</code> on
+            shared branches like <code>main</code> or <code>develop</code>.
+            Use <code>git revert</code> instead.
+          </div>
+          <div class="done-row">
+            <input type="checkbox" class="done-checkbox" id="done-7" aria-label="Mark topic 7 as done" />
+            <label for="done-7" class="done-label">Mark as done</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 8. .gitignore -->
+      <div class="card" id="topic-8">
+        <div class="card-header" role="button" tabindex="0" aria-expanded="false">
+          <span class="card-icon">&#x1F6AB;</span>
+          <span class="card-title">8. Ignoring Files with .gitignore</span>
+          <span class="card-tag tag-beginner">Beginner</span>
+          <span class="card-chevron">&#x25BC;</span>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">
+            <code>.gitignore</code> prevents build artifacts, secrets, and
+            dependencies from being tracked. It should be committed to the
+            repo.
+          </p>
+          <div class="code-block">
+            <div class="code-label">Example .gitignore (Node.js project)</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button>node_modules/
+dist/
+.env
+.env.local
+*.log
+.DS_Store
+coverage/</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label">Stop tracking a file already committed</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button>git rm --cached .env       # remove from index, keep local file
+echo ".env" &gt;&gt; .gitignore
+git commit -m "chore: untrack .env"</pre>
+          </div>
+          <div class="tip">
+            <strong>Production tip:</strong> Use
+            <a href="https://gitignore.io" target="_blank" rel="noopener noreferrer">gitignore.io</a>
+            to generate a <code>.gitignore</code> for your stack in seconds.
+            Never commit <code>.env</code> files containing secrets.
+          </div>
+          <div class="done-row">
+            <input type="checkbox" class="done-checkbox" id="done-8" aria-label="Mark topic 8 as done" />
+            <label for="done-8" class="done-label">Mark as done</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====================================================
+         ADVANCED SECTION
+    ===================================================== -->
+    <div class="section" id="advanced">
+      <h2 class="section-title">&#x26A1; Advanced — Power-User Git</h2>
+
+      <!-- 9. Rebase -->
+      <div class="card" id="topic-9">
+        <div class="card-header" role="button" tabindex="0" aria-expanded="false">
+          <span class="card-icon">&#x1F500;</span>
+          <span class="card-title">9. Rebase — Rewrite History</span>
+          <span class="card-tag tag-advanced">Advanced</span>
+          <span class="card-chevron">&#x25BC;</span>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">
+            <code>git rebase</code> replays your commits on top of another
+            branch, producing a <strong>linear history</strong> without merge
+            commits. Interactive rebase (<code>-i</code>) lets you squash,
+            reorder, edit, or drop commits before sharing.
+          </p>
+          <div class="code-block">
+            <div class="code-label">Standard rebase</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button># Update feature branch with latest main changes
+git checkout feature/login
+git fetch origin
+git rebase origin/main</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label">Interactive rebase (last 3 commits)</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button>git rebase -i HEAD~3
+# In the editor, commands per line:
+#   pick   - keep as-is
+#   reword - keep but edit message
+#   squash - meld into previous commit
+#   fixup  - like squash but discard message
+#   drop   - remove this commit entirely</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label">After resolving conflicts during rebase</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button>git status                # see conflicting files
+# edit the conflicting files, then:
+git add &lt;resolved-file&gt;
+git rebase --continue
+# or abort entirely:
+git rebase --abort</pre>
+          </div>
+          <div class="tip">
+            <strong>Production tip:</strong> Squash WIP commits into one
+            meaningful commit before opening a pull request. Reviewers thank
+            you. Never rebase commits already on a shared remote branch.
+          </div>
+          <div class="done-row">
+            <input type="checkbox" class="done-checkbox" id="done-9" aria-label="Mark topic 9 as done" />
+            <label for="done-9" class="done-label">Mark as done</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 10. Cherry-pick -->
+      <div class="card" id="topic-10">
+        <div class="card-header" role="button" tabindex="0" aria-expanded="false">
+          <span class="card-icon">&#x1F352;</span>
+          <span class="card-title">10. Cherry-pick — Apply Specific Commits</span>
+          <span class="card-tag tag-advanced">Advanced</span>
+          <span class="card-chevron">&#x25BC;</span>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">
+            <code>git cherry-pick</code> applies one or more commits from any
+            branch onto the current branch. Useful for backporting a bug fix
+            to a release branch without merging everything.
+          </p>
+          <div class="code-block">
+            <div class="code-label">Cherry-pick a commit</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button>git cherry-pick abc1234            # apply one commit
+git cherry-pick abc1234 def5678    # apply multiple commits in order
+git cherry-pick abc1234..def5678   # apply a range of commits</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label">Cherry-pick without auto-committing</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button>git cherry-pick -n abc1234         # stage changes but don't commit yet
+git status                         # review, then commit manually</pre>
+          </div>
+          <div class="tip">
+            <strong>Production use-case:</strong> A critical security fix was
+            merged to <code>main</code>. You need it in the
+            <code>release/v2.3</code> branch immediately without pulling all
+            of <code>main</code>. Cherry-pick that fix commit onto the release
+            branch.
+          </div>
+          <div class="done-row">
+            <input type="checkbox" class="done-checkbox" id="done-10" aria-label="Mark topic 10 as done" />
+            <label for="done-10" class="done-label">Mark as done</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 11. Stash -->
+      <div class="card" id="topic-11">
+        <div class="card-header" role="button" tabindex="0" aria-expanded="false">
+          <span class="card-icon">&#x1F9F3;</span>
+          <span class="card-title">11. Stash — Temporarily Shelve Changes</span>
+          <span class="card-tag tag-advanced">Advanced</span>
+          <span class="card-chevron">&#x25BC;</span>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">
+            <code>git stash</code> saves your uncommitted work to a stack so
+            you can switch context (e.g., fix an urgent bug on another branch)
+            then come back to resume.
+          </p>
+          <div class="code-block">
+            <div class="code-label">Stash commands</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button>git stash                        # stash tracked changes
+git stash -u                     # stash including untracked files
+git stash push -m "WIP: user auth" # stash with a descriptive name
+git stash list                   # view all stashes
+git stash pop                    # re-apply most recent stash &amp; remove it
+git stash apply stash@{2}        # apply a specific stash (keep it in list)
+git stash drop stash@{0}         # delete a specific stash
+git stash clear                  # delete all stashes</pre>
+          </div>
+          <div class="tip">
+            <strong>Pro tip:</strong> Use descriptive stash names
+            (<code>git stash push -m "description"</code>). A stash list full
+            of unnamed entries is hard to manage after a few days.
+          </div>
+          <div class="done-row">
+            <input type="checkbox" class="done-checkbox" id="done-11" aria-label="Mark topic 11 as done" />
+            <label for="done-11" class="done-label">Mark as done</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 12. Tags & Releases -->
+      <div class="card" id="topic-12">
+        <div class="card-header" role="button" tabindex="0" aria-expanded="false">
+          <span class="card-icon">&#x1F3F7;&#xFE0F;</span>
+          <span class="card-title">12. Tags &amp; Releases</span>
+          <span class="card-tag tag-advanced">Advanced</span>
+          <span class="card-chevron">&#x25BC;</span>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">
+            Tags mark specific commits as release points (e.g., <code>v1.4.0</code>).
+            <em>Annotated tags</em> store extra metadata and are the standard
+            for releases.
+          </p>
+          <div class="code-block">
+            <div class="code-label">Tag commands</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button>git tag                            # list tags
+git tag v1.0.0                     # lightweight tag
+git tag -a v1.0.0 -m "Release 1.0.0"  # annotated tag (preferred)
+git tag -a v1.0.0 abc1234 -m "..."    # tag a past commit
+git push origin v1.0.0             # push one tag
+git push origin --tags             # push all tags
+git tag -d v1.0.0                  # delete local tag
+git push origin --delete v1.0.0   # delete remote tag</pre>
+          </div>
+          <div class="tip">
+            <strong>Production tip:</strong> Follow
+            <a href="https://semver.org" target="_blank" rel="noopener noreferrer">Semantic Versioning</a>:
+            <code>MAJOR.MINOR.PATCH</code>. Pair tags with GitHub Releases and
+            a generated changelog for professional release management.
+          </div>
+          <div class="done-row">
+            <input type="checkbox" class="done-checkbox" id="done-12" aria-label="Mark topic 12 as done" />
+            <label for="done-12" class="done-label">Mark as done</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 13. Conflict Resolution -->
+      <div class="card" id="topic-13">
+        <div class="card-header" role="button" tabindex="0" aria-expanded="false">
+          <span class="card-icon">&#x2694;&#xFE0F;</span>
+          <span class="card-title">13. Resolving Merge Conflicts</span>
+          <span class="card-tag tag-advanced">Advanced</span>
+          <span class="card-chevron">&#x25BC;</span>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">
+            Conflicts happen when two branches change the same lines. Git marks
+            the conflicting sections; you decide which version (or a blend) to
+            keep.
+          </p>
+          <div class="code-block">
+            <div class="code-label">Conflict markers in a file</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD (your current branch)
+const port = 3000;
+=======
+const port = 8080;
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/port-change (incoming branch)</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label">Resolve workflow</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button># 1. Open conflicting files and edit them to the desired result
+# 2. Remove all conflict markers (&lt;&lt;&lt;, ===, &gt;&gt;&gt;)
+# 3. Stage the resolved files
+git add file.txt
+# 4. Complete the merge / rebase
+git merge --continue
+# or
+git rebase --continue</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label">Use a merge tool</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button>git config --global merge.tool vscode
+git mergetool   # opens all conflicting files in the configured tool</pre>
+          </div>
+          <div class="tip">
+            <strong>Production tip:</strong> Use
+            <code>git diff --diff-filter=U</code> to quickly list only
+            conflicting files. VS Code's built-in merge editor (three-pane
+            view) makes conflict resolution much faster.
+          </div>
+          <div class="done-row">
+            <input type="checkbox" class="done-checkbox" id="done-13" aria-label="Mark topic 13 as done" />
+            <label for="done-13" class="done-label">Mark as done</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 14. git blame & bisect -->
+      <div class="card" id="topic-14">
+        <div class="card-header" role="button" tabindex="0" aria-expanded="false">
+          <span class="card-icon">&#x1F50D;</span>
+          <span class="card-title">14. Debugging — blame &amp; bisect</span>
+          <span class="card-tag tag-advanced">Advanced</span>
+          <span class="card-chevron">&#x25BC;</span>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">
+            <code>git blame</code> shows who last changed each line of a file.
+            <code>git bisect</code> performs a binary search through history to
+            find the commit that introduced a bug.
+          </p>
+          <div class="code-block">
+            <div class="code-label">git blame</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button>git blame src/api.js              # who changed each line
+git blame -L 10,25 src/api.js    # only lines 10–25
+git blame -w src/api.js          # ignore whitespace changes</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label">git bisect</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button>git bisect start
+git bisect bad                   # current commit is broken
+git bisect good v2.0.0           # this tag was working
+
+# Git checks out a midpoint commit — test your app, then:
+git bisect good   # if this commit is fine
+git bisect bad    # if this commit is broken
+
+# Git narrows down; repeat until it prints the culprit commit
+git bisect reset  # return to original HEAD when done</pre>
+          </div>
+          <div class="tip">
+            <strong>Production tip:</strong> Bisect runs in
+            <code>O(log n)</code> steps — it finds the offending commit among
+            1000 commits in ~10 steps. Automate it:
+            <code>git bisect run npm test</code> (exits 0 = good, non-0 = bad).
+          </div>
+          <div class="done-row">
+            <input type="checkbox" class="done-checkbox" id="done-14" aria-label="Mark topic 14 as done" />
+            <label for="done-14" class="done-label">Mark as done</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 15. Reflog -->
+      <div class="card" id="topic-15">
+        <div class="card-header" role="button" tabindex="0" aria-expanded="false">
+          <span class="card-icon">&#x1F9F5;</span>
+          <span class="card-title">15. Reflog — Git's Safety Net</span>
+          <span class="card-tag tag-advanced">Advanced</span>
+          <span class="card-chevron">&#x25BC;</span>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">
+            <code>git reflog</code> records every movement of
+            <code>HEAD</code> — even commits that were reset or branches that
+            were deleted. It is your last resort to recover "lost" work.
+          </p>
+          <div class="code-block">
+            <div class="code-label">Recover a lost commit</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button>git reflog                        # list all HEAD movements with short SHAs
+# Find the SHA of the lost commit, then:
+git checkout abc1234              # inspect it
+git branch recover-branch abc1234 # recreate a branch at that commit</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label">Recover after a bad reset --hard</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button>git reflog
+# e.g., HEAD@{2} is the commit before the bad reset
+git reset --hard HEAD@{2}</pre>
+          </div>
+          <div class="tip">
+            <strong>Good to know:</strong> Reflog entries expire after 90 days
+            by default. It only exists locally — it is not pushed to remotes.
+          </div>
+          <div class="done-row">
+            <input type="checkbox" class="done-checkbox" id="done-15" aria-label="Mark topic 15 as done" />
+            <label for="done-15" class="done-label">Mark as done</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====================================================
+         PRO / WORKFLOWS SECTION
+    ===================================================== -->
+    <div class="section" id="pro">
+      <h2 class="section-title">&#x1F680; Pro — Production Workflows</h2>
+
+      <!-- 16. Git Hooks -->
+      <div class="card" id="topic-16">
+        <div class="card-header" role="button" tabindex="0" aria-expanded="false">
+          <span class="card-icon">&#x1FA9D;</span>
+          <span class="card-title">16. Git Hooks — Automate Quality Gates</span>
+          <span class="card-tag tag-pro">Pro</span>
+          <span class="card-chevron">&#x25BC;</span>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">
+            Git hooks are scripts that run automatically before or after Git
+            events (commit, push, merge). Use them to enforce quality standards
+            without relying on developer memory.
+          </p>
+          <div class="code-block">
+            <div class="code-label">pre-commit hook — run linter before every commit</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button>#!/bin/sh
+# .git/hooks/pre-commit  (make executable: chmod +x .git/hooks/pre-commit)
+npm run lint || exit 1   # block the commit if lint fails</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label">commit-msg hook — enforce Conventional Commits</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button>#!/bin/sh
+# .git/hooks/commit-msg
+msg=$(cat "$1")
+pattern="^(feat|fix|docs|style|refactor|test|chore)(\(.+\))?: .+"
+if ! echo "$msg" | grep -qE "$pattern"; then
+  echo "ERROR: Commit message must follow Conventional Commits format."
+  echo "Example: feat(auth): add OAuth login"
+  exit 1
+fi</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label">Share hooks via Husky (Node.js projects)</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button>npm install --save-dev husky
+npx husky init
+# Edit .husky/pre-commit to add your commands</pre>
+          </div>
+          <div class="tip">
+            <strong>Production tip:</strong> Hooks in <code>.git/hooks/</code>
+            are local and not committed. Use
+            <a href="https://typicode.github.io/husky/" target="_blank" rel="noopener noreferrer">Husky</a>
+            or
+            <a href="https://pre-commit.com" target="_blank" rel="noopener noreferrer">pre-commit</a>
+            to share hooks across the team via the repo itself.
+          </div>
+          <div class="done-row">
+            <input type="checkbox" class="done-checkbox" id="done-16" aria-label="Mark topic 16 as done" />
+            <label for="done-16" class="done-label">Mark as done</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 17. Gitflow / Trunk-Based -->
+      <div class="card" id="topic-17">
+        <div class="card-header" role="button" tabindex="0" aria-expanded="false">
+          <span class="card-icon">&#x1F5FA;&#xFE0F;</span>
+          <span class="card-title">17. Git Workflows — Gitflow vs Trunk-Based</span>
+          <span class="card-tag tag-pro">Pro</span>
+          <span class="card-chevron">&#x25BC;</span>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">
+            How a team branches and merges is just as important as individual
+            Git skills. Two dominant strategies:
+          </p>
+          <div class="code-block">
+            <div class="code-label">Gitflow — structured release cycle</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button># Branches: main, develop, feature/*, release/*, hotfix/*
+# Install gitflow extension (optional helper)
+git flow init
+
+# Start a feature
+git flow feature start user-auth
+
+# Finish it (merges to develop)
+git flow feature finish user-auth
+
+# Start a release
+git flow release start 1.2.0
+# ... test, bump version ...
+git flow release finish 1.2.0   # merges to main &amp; develop, creates tag</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label">Trunk-Based Development — high velocity CI/CD</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button># Everyone commits to "main" (the trunk) at least daily
+# Short-lived feature branches (&lt; 2 days) merged via PR
+
+git checkout -b feat/short-task
+# ... make change ...
+git commit -m "feat: small focused change"
+git push origin feat/short-task
+# Open PR → CI passes → squash merge → delete branch</pre>
+          </div>
+          <div class="tip">
+            <strong>Choose based on release cadence:</strong>
+            Use <strong>Gitflow</strong> for versioned products with
+            scheduled releases (mobile apps, packaged software).
+            Use <strong>Trunk-Based</strong> for web services with continuous
+            deployment — it pairs perfectly with feature flags.
+          </div>
+          <div class="done-row">
+            <input type="checkbox" class="done-checkbox" id="done-17" aria-label="Mark topic 17 as done" />
+            <label for="done-17" class="done-label">Mark as done</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 18. Submodules -->
+      <div class="card" id="topic-18">
+        <div class="card-header" role="button" tabindex="0" aria-expanded="false">
+          <span class="card-icon">&#x1F9E9;</span>
+          <span class="card-title">18. Submodules — Nesting Repositories</span>
+          <span class="card-tag tag-pro">Pro</span>
+          <span class="card-chevron">&#x25BC;</span>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">
+            Submodules allow you to embed one Git repository inside another
+            while keeping their histories independent. Used for shared
+            libraries or vendored dependencies.
+          </p>
+          <div class="code-block">
+            <div class="code-label">Submodule commands</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button>git submodule add https://github.com/owner/lib.git libs/mylib
+git submodule update --init --recursive   # init &amp; clone all submodules
+git submodule update --remote             # pull latest commits in submodules
+git submodule foreach git pull origin main  # update all submodules</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label">Cloning a repo with submodules</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button>git clone --recurse-submodules https://github.com/owner/repo.git</pre>
+          </div>
+          <div class="tip">
+            <strong>Production tip:</strong> Submodules have a steep learning
+            curve. Consider
+            <a href="https://classic.yarnpkg.com/en/docs/workspaces/" target="_blank" rel="noopener noreferrer">Yarn/npm Workspaces</a>
+            or a monorepo tool (Nx, Turborepo) for JavaScript projects.
+            Submodules shine for firmware/embedded projects with
+            language-agnostic shared code.
+          </div>
+          <div class="done-row">
+            <input type="checkbox" class="done-checkbox" id="done-18" aria-label="Mark topic 18 as done" />
+            <label for="done-18" class="done-label">Mark as done</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 19. Force push safety -->
+      <div class="card" id="topic-19">
+        <div class="card-header" role="button" tabindex="0" aria-expanded="false">
+          <span class="card-icon">&#x26A0;&#xFE0F;</span>
+          <span class="card-title">19. Force Push — When and How to Do It Safely</span>
+          <span class="card-tag tag-pro">Pro</span>
+          <span class="card-chevron">&#x25BC;</span>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">
+            Sometimes you need to rewrite the history of a remote branch (e.g.,
+            after an interactive rebase or amending a pushed commit). Plain
+            <code>--force</code> is dangerous. Use
+            <code>--force-with-lease</code> instead.
+          </p>
+          <div class="code-block">
+            <div class="code-label">Safe force push</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button># WRONG — overwrites any remote changes you haven't fetched:
+git push --force origin feature/login
+
+# CORRECT — fails if someone else pushed since your last fetch:
+git push --force-with-lease origin feature/login</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label">Protect production branches (GitHub)</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button># In GitHub: Settings → Branches → Add branch protection rule
+# Enable:
+#  ✔ Require pull request reviews before merging
+#  ✔ Require status checks to pass
+#  ✔ Do not allow bypassing the above settings
+#  ✔ Block force pushes</pre>
+          </div>
+          <div class="tip">
+            <strong>Rule of thumb:</strong> Force push is acceptable only on
+            your own feature branches. It is <em>never</em> acceptable on
+            <code>main</code>, <code>develop</code>, or any shared branch.
+          </div>
+          <div class="done-row">
+            <input type="checkbox" class="done-checkbox" id="done-19" aria-label="Mark topic 19 as done" />
+            <label for="done-19" class="done-label">Mark as done</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 20. Sparse checkout & shallow clone -->
+      <div class="card" id="topic-20">
+        <div class="card-header" role="button" tabindex="0" aria-expanded="false">
+          <span class="card-icon">&#x26A1;</span>
+          <span class="card-title">20. Performance — Shallow Clones &amp; Sparse Checkout</span>
+          <span class="card-tag tag-pro">Pro</span>
+          <span class="card-chevron">&#x25BC;</span>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">
+            Large monorepos and long-lived projects can have slow clones. These
+            techniques dramatically speed up CI pipelines and local onboarding.
+          </p>
+          <div class="code-block">
+            <div class="code-label">Shallow clone — fetch only recent history</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button>git clone --depth 1 https://github.com/owner/repo.git      # only latest commit
+git clone --depth 50 https://github.com/owner/repo.git     # last 50 commits
+# Unshallow later if needed:
+git fetch --unshallow</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label">Sparse checkout — only download specific directories</div>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button>git clone --filter=blob:none --sparse https://github.com/owner/monorepo.git
+cd monorepo
+git sparse-checkout set packages/my-app packages/shared-lib</pre>
+          </div>
+          <div class="tip">
+            <strong>CI/CD tip:</strong> In GitHub Actions, always use
+            <code>actions/checkout@v4</code> with
+            <code>fetch-depth: 1</code> (the default) for faster pipelines.
+            Only set <code>fetch-depth: 0</code> when you need the full
+            history (e.g., for semantic-release or changelog generation).
+          </div>
+          <div class="done-row">
+            <input type="checkbox" class="done-checkbox" id="done-20" aria-label="Mark topic 20 as done" />
+            <label for="done-20" class="done-label">Mark as done</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const TOTAL_TOPICS = 20;
+      const STORAGE_KEY = "git-guide-progress";
+
+      // ── Helpers ────────────────────────────────────────────
+      function loadProgress() {
+        try {
+          return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+        } catch (e) {
+          return {};
+        }
+      }
+
+      function saveProgress(data) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      }
+
+      function updateProgressBar() {
+        var done = document.querySelectorAll(".done-checkbox:checked").length;
+        var pct = Math.round((done / TOTAL_TOPICS) * 100);
+        document.getElementById("progress-fill").style.width = pct + "%";
+        document.getElementById("progress-count").textContent =
+          done + " / " + TOTAL_TOPICS + " topics completed";
+      }
+
+      // ── Restore saved state ────────────────────────────────
+      var progress = loadProgress();
+      Object.keys(progress).forEach(function (id) {
+        if (progress[id]) {
+          var cb = document.getElementById(id);
+          if (cb) {
+            cb.checked = true;
+            var card = cb.closest(".card");
+            if (card) card.classList.add("done");
+          }
+        }
+      });
+      updateProgressBar();
+
+      // ── Checkbox listeners ─────────────────────────────────
+      document.querySelectorAll(".done-checkbox").forEach(function (cb) {
+        cb.addEventListener("change", function () {
+          var card = cb.closest(".card");
+          if (card) card.classList.toggle("done", cb.checked);
+          var data = loadProgress();
+          data[cb.id] = cb.checked;
+          saveProgress(data);
+          updateProgressBar();
+        });
+      });
+
+      // ── Card accordion ─────────────────────────────────────
+      document.querySelectorAll(".card-header").forEach(function (header) {
+        function toggle() {
+          var card = header.closest(".card");
+          var isOpen = card.classList.toggle("open");
+          header.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        }
+        header.addEventListener("click", toggle);
+        header.addEventListener("keydown", function (e) {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            toggle();
+          }
+        });
+      });
+
+      // ── Copy buttons ───────────────────────────────────────
+      document.querySelectorAll(".copy-btn").forEach(function (btn) {
+        btn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          var pre = btn.closest("pre");
+          var code = pre.innerText.replace(/^Copy\n?/, "").trim();
+          navigator.clipboard.writeText(code).then(function () {
+            var orig = btn.textContent;
+            btn.textContent = "Copied!";
+            setTimeout(function () {
+              btn.textContent = orig;
+            }, 1500);
+          });
+        });
+      });
+
+      // ── Theme toggle ───────────────────────────────────────
+      var themeToggle = document.getElementById("theme-toggle");
+      if (localStorage.getItem("theme") === "dark") {
+        document.body.classList.add("dark");
+        themeToggle.textContent = "\u2600\uFE0F";
+      }
+      themeToggle.addEventListener("click", function () {
+        var isDark = document.body.classList.toggle("dark");
+        themeToggle.textContent = isDark ? "\u2600\uFE0F" : "\uD83C\uDF19";
+        localStorage.setItem("theme", isDark ? "dark" : "light");
+      });
+
+      // ── Reset progress ─────────────────────────────────────
+      document.getElementById("reset-btn").addEventListener("click", function () {
+        if (!confirm("Reset all progress?")) return;
+        localStorage.removeItem(STORAGE_KEY);
+        document.querySelectorAll(".done-checkbox").forEach(function (cb) {
+          cb.checked = false;
+          var card = cb.closest(".card");
+          if (card) card.classList.remove("done");
+        });
+        updateProgressBar();
+      });
+    </script>
+  </body>
+</html>
